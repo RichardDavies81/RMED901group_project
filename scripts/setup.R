@@ -51,3 +51,35 @@ sum(is.na(my_data$value))
 my_data <- my_data %>% 
   pivot_wider(names_from = time, values_from = value)
 
+unique(my_data$ID) # 11344
+nrow(my_data) # 15524
+
+# look for duplication in ID to further assess
+
+
+
+duplicates <- duplicated(my_data$ID)
+
+duplicated_IDs <- my_data[duplicates, ]
+
+x <- duplicated_IDs[duplicated_IDs$ID ==2191, ] # Indicates clinic name and patient class, likely not an issue
+
+rm(duplicated_IDs)
+rm(x)
+rm(duplicates)
+
+# change data types
+
+summary(my_data) # beverything is a character :(
+colnames(my_data)
+
+test <- my_data %>%
+  mutate(
+    ID = as.numeric(ID),
+    gender = as.factor(gender),
+    age = as.numeric(age),
+    clinic_name = as.factor(clinic_name),
+    result = as.factor(result)
+  )
+
+
