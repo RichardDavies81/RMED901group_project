@@ -90,12 +90,13 @@ data_combined <- data %>%
   left_join(data_wide, by = "row")
 
 
-#Check variable types - comment on any changes you would like to make but do not make any changes
+# From now use the data_combined (and test with the test dataset first)
+# Check variable types - comment on any changes you would like to make but do not make any changes
 # Check the structure of the dataset and the types of variables
-str(data)
+str(data_combined)
 
 # Check the type of each column
-sapply(data, class)
+sapply(data_combined, class)
 
 # ID column: If "ID" is not used in calculations and is just a unique identifier, it could be converted into a factor or character to save memory.
 # Age column: Ensure "Age" is numeric. If it's stored as a character, it should be converted to numeric.
@@ -104,9 +105,24 @@ sapply(data, class)
 
 # Day 6: Tidy, adjust, and explore. 
 #Remove unnecessary columns from your dataframe: `row, test_id, demo_group`
+
+# Remove the 'row', 'test_id', and 'demo_group' columns
+data_combined <- data %>% select(-row, -test_id, -demo_group)
+
+# View the updated dataframe
+head(data_combined)
+
 # Make necessary changes in variable types
 # Create a set of new columns:
 # A column showing whether `rec_ver_tat` is higher than 100 or not: values High/Low
+
+# Create a new column 'rec_ver_tat_status' showing whether 'rec_ver_tat' is High (>100) or Low (<=100)
+test <- data_combined %>%
+  mutate(rec_ver_tat_status = ifelse(rec_ver_tat > 100, "High", "Low"))
+
+# View the updated data
+head(data_combined)
+
 # A numeric column showing `pan_day` in weeks
 # A column showing `drive_thru_ind` as Yes/No
 # A numeric column showing multiplication of `ct_result` and `orderset` for each person
