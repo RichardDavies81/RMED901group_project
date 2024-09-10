@@ -96,7 +96,7 @@ my_data <- my_data %>%
     col_rec_tat = as.numeric(col_rec_tat)
     )
 
-##### Note- issue with clinic_name, only 1 level 
+ 
 
 # Remove unnecessary columns from your dataframe: `row, test_id, demo_group` ----
 
@@ -104,6 +104,8 @@ colnames(my_data)
 
 my_data <- my_data %>%
   select(-row, -test_id, -demo_group)
+
+# making new columns ----
 
 # A column showing whether `rec_ver_tat` is higher than 100 or not: values High/Low
 
@@ -142,7 +144,7 @@ test <- my_data %>%
   arrange(ID)
 
 
-# Read and join the additional dataset to your main dataset (using full join as can exclude later).
+# Read and join the additional dataset to your main dataset (using full join as can exclude later). ----
 
 join_data <- read_delim("data/exam_joindata.txt", col_names = TRUE)
 join_data <- rename(join_data, ID = id) # renamed to match full_join
@@ -151,7 +153,34 @@ join_data <- rename(join_data, ID = id) # renamed to match full_join
 complete_data <- my_data %>%
   full_join(join_data, join_by(ID))
 
-# Explore and comment on the missing variables.
+
+########## Clean up code with pipes ##########
+
+
+
+
+
+
+
+
+# Explore combined dataset ----
+
+# comment on the missing variables.
+
+summary(complete_data) # NAs in ct_results and ct_orderset; lots in payor_group, patient_class, antibody
+skimr::skim(complete_data)
+naniar::gg_miss_var(complete_data)
+
+# complete cases
+
+complete.cases(complete_data)
+
+percent_complete <- sum(complete.cases(complete_data)) / nrow(complete_data) * 100 # 83% complete cases
+
+
+
+
+
 # Stratify your data by a categorical column and report min, max, mean and sd of a numeric column.
 # Stratify your data by a categorical column and report min, max, mean and sd of a numeric column for a defined set of observations - use pipe!
   # Only for persons with `patient_class == inpatient`
