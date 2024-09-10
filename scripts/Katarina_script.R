@@ -117,15 +117,53 @@ head(data_combined)
 # A column showing whether `rec_ver_tat` is higher than 100 or not: values High/Low
 
 # Create a new column 'rec_ver_tat_status' showing whether 'rec_ver_tat' is High (>100) or Low (<=100)
-test <- data_combined %>%
-  mutate(rec_ver_tat_status = ifelse(rec_ver_tat > 100, "High", "Low"))
+#test <- data_combined %>%
+#  mutate(rec_ver_tat_status = ifelse(rec_ver_tat > 100, "High", "Low"))
 
 # View the updated data
+#colnames(data_combined)
+
+# Check if 'rec_ver_tat' exists and inspect the first few rows
+head(data_combined$rec_ver_tat)
+
+# Check the type of the 'rec_ver_tat' column
+class(data_combined$rec_ver_tat)
+
+# Convert 'rec_ver_tat' to numeric (if needed) and create the new column
+data_combined <- data_combined %>%
+  mutate(rec_ver_tat = as.numeric(rec_ver_tat),  # Ensure the column is numeric
+         rec_ver_tat_status = ifelse(rec_ver_tat > 100, "High", "Low"))
+
+# Check the first few rows of the updated dataset
 head(data_combined)
 
+
 # A numeric column showing `pan_day` in weeks
+
+
+# Create a new numeric column 'pan_day_weeks' that shows 'pan_day' in weeks
+data_combined <- data_combined %>%
+  mutate(pan_day_weeks = pan_day / 7)
+
+# View the first few rows of the updated data
+head(data_combined)
+
+
 # A column showing `drive_thru_ind` as Yes/No
+
+# Create a new column 'drive_thru_ind_status' with Yes/No based on 'drive_thru_ind'
+data_combined <- data_combined %>%
+  mutate(drive_thru_ind_status = ifelse(drive_thru_ind == 1, "Yes", "No"))
+
+
 # A numeric column showing multiplication of `ct_result` and `orderset` for each person
+
+# Create a new numeric column 'ct_orderset_multiplication'
+data_combined <- data_combined %>%
+  mutate(ct_orderset_multiplication = ct_result * orderset)
+
+
+
 # Set the order of columns as: `id, age, gender` and other columns
 # Arrange ID column of your dataset in order of increasing number or alphabetically.
 # Read and join the additional dataset to your main dataset.
