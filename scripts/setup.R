@@ -6,11 +6,11 @@ library(tidyverse) # loading package for cleaning of data
 library(here) # for targeting directory
 here()
 
-dir.create("data")
-dir.create("figures")
-dir.create("processed_data")
-dir.create("results")
-dir.create("scripts")
+#dir.create("data")
+#dir.create("figures")
+#dir.create("processed_data")
+#dir.create("results")
+#dir.create("scripts")
 
 ## explore_dataset.txt and edit dataset----
 
@@ -29,8 +29,8 @@ my_data <- my_data %>%
            into = c("ID", "first_name", "last_name"), 
            sep = " ")
 
-nrow(my_data)  # check length of dataset
-unique(my_data$ID) # check duplication of dataset
+nrow(my_data)  # check length of dataset, 12344
+length(unique(my_data$ID)) # check duplication of ID, 34048
 
 
 # identify any pure duplications
@@ -56,8 +56,6 @@ nrow(my_data) # 15524
 
 # look for duplication in ID to further assess
 
-
-
 duplicates <- duplicated(my_data$ID)
 
 duplicated_IDs <- my_data[duplicates, ]
@@ -68,9 +66,14 @@ rm(duplicated_IDs)
 rm(x)
 rm(duplicates)
 
+# noticed an issue with pan day- rename
+
+my_data <- rename(my_data, pan_day = 'pan day', test_id = '1_test_id')
+
+
 # change data types
 
-summary(my_data) # beverything is a character :(
+summary(my_data) # everything is a character, OH NO!
 colnames(my_data)
 
 test <- my_data %>%
@@ -79,7 +82,27 @@ test <- my_data %>%
     gender = as.factor(gender),
     age = as.numeric(age),
     clinic_name = as.factor(clinic_name),
-    result = as.factor(result)
-  )
+    result = as.factor(result),
+    demo_group = as.factor(demo_group),
+    drive_thru_ind = as.factor(drive_thru_ind),
+    ct_result = as.numeric(ct_result),
+    orderset = as.factor(orderset),
+    payor_group = as.factor(payor_group),
+    patient_class = as.factor(patient_class),
+    pan_day = as.numeric(pan_day),
+    test_id = as.factor(test_id),
+    row = as.numeric(row),
+    rec_ver_tat = as.numeric(rec_ver_tat),
+    col_rec_tat = as.numeric(col_rec_tat)
+    )
+
+##### Note- issue with clinic_name, only 1 level 
+
+# examine row to check if this is the key for exam_joindata
+
+join_data <- read_delim("data/exam_joindata.txt", col_names = TRUE)
+
+range(join_data$id)
+range(my_data$ID)
 
 
