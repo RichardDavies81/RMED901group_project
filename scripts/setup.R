@@ -76,7 +76,7 @@ my_data <- rename(my_data, pan_day = 'pan day', test_id = '1_test_id')
 summary(my_data) # everything is a character, OH NO!
 colnames(my_data)
 
-test <- my_data %>%
+my_data <- my_data %>%
   mutate(
     ID = as.numeric(ID),
     gender = as.factor(gender),
@@ -86,7 +86,7 @@ test <- my_data %>%
     demo_group = as.factor(demo_group),
     drive_thru_ind = as.factor(drive_thru_ind),
     ct_result = as.numeric(ct_result),
-    orderset = as.factor(orderset),
+    orderset = as.numeric(orderset),
     payor_group = as.factor(payor_group),
     patient_class = as.factor(patient_class),
     pan_day = as.numeric(pan_day),
@@ -98,11 +98,78 @@ test <- my_data %>%
 
 ##### Note- issue with clinic_name, only 1 level 
 
-# examine row to check if this is the key for exam_joindata
+# Remove unnecessary columns from your dataframe: `row, test_id, demo_group` ----
+
+colnames(my_data)
+
+my_data <- my_data %>%
+  select(-row, -test_id, -demo_group)
+
+# A column showing whether `rec_ver_tat` is higher than 100 or not: values High/Low
+
+my_data <- my_data %>% 
+  mutate(rvt = if_else(rec_ver_tat > 100, "High", "Low"))
+
+
+# A numeric column showing `pan_day` in weeks
+
+my_data <- my_data %>% 
+  mutate(pan_week = pan_day/7)
+
+
+# A column showing `drive_thru_ind` as Yes/No
+
+unique(my_data$drive_thru_ind)
+
+my_data <- my_data %>% 
+  mutate(dti_yes_no = if_else(drive_thru_ind == 1, "Yes", "No"))
+
+
+# A numeric column showing multiplication of `ct_result` and `orderset` for each person
+
+my_data <- my_data %>% 
+  mutate(ct_orderset = ct_result*orderset)
+
+
+# Set the order of columns as: `id, age, gender` and other columns
+
+my_data <- my_data %>% 
+  select(ID, age, gender, everything())
+
+# Arrange ID column of your dataset in order of increasing number or alphabetically.
+
+test <- my_data %>%
+  arrange(ID)
+
+
+# Read and join the additional dataset to your main dataset (using full join as can exclude later).
 
 join_data <- read_delim("data/exam_joindata.txt", col_names = TRUE)
+join_data <- rename(join_data, ID = id) # renamed to match full_join
 
-range(join_data$id)
-range(my_data$ID)
+
+complete_data <- my_data %>%
+  full_join(join_data, join_by(ID))
+
+# Explore and comment on the missing variables.
+# Stratify your data by a categorical column and report min, max, mean and sd of a numeric column.
+# Stratify your data by a categorical column and report min, max, mean and sd of a numeric column for a defined set of observations - use pipe!
+  # Only for persons with `patient_class == inpatient`
+# Only for persons with `ct_result == 45`
+# Only for persons tested `pan_day` later than 50
+# Only for persons with `drive_thru_ind == 0` and `ct_result` lower than 35
+# Use two categorical columns in your dataset to create a table (hint: ?count)
+
+
+
+
+
+ 
+
+
+
+# examine row to check if this is the key for exam_joindata
+
+
 
 
