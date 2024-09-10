@@ -175,29 +175,82 @@ naniar::gg_miss_var(complete_data)
 
 complete.cases(complete_data)
 
-percent_complete <- sum(complete.cases(complete_data)) / nrow(complete_data) * 100 # 83% complete cases
-
-
+percent_complete <- sum(complete.cases(complete_data)) / nrow(complete_data) * 100 # 83% complete cases.... double check this later as looks incorrect with previous join_data being 200 Obs
 
 
 
 # Stratify your data by a categorical column and report min, max, mean and sd of a numeric column.
+
+complete_data %>% 
+  group_by(gender) %>% 
+  summarise(mean(age, na.rm = T),
+            max(age),
+            min(age),
+            sd(age))
+
+            # Boring very similar
+
+
 # Stratify your data by a categorical column and report min, max, mean and sd of a numeric column for a defined set of observations - use pipe!
-  # Only for persons with `patient_class == inpatient`
+
+
+# Only for persons with `patient_class == inpatient`
+
+complete_data %>% 
+  filter(patient_class == "inpatient") %>%
+  group_by(gender) %>% 
+  summarise(mean(age, na.rm = T),
+            max(age),
+            min(age),
+            sd(age))
+
+
 # Only for persons with `ct_result == 45`
+
+complete_data %>%
+  filter(ct_result == 45) %>%
+  group_by(gender) %>% 
+  summarise(mean(age, na.rm = T),
+            max(age),
+            min(age),
+            sd(age))
+
+
 # Only for persons tested `pan_day` later than 50
+
+complete_data %>% 
+  filter(pan_day > 50) %>%
+  group_by(gender) %>% 
+  summarise(mean(age, na.rm = T),
+            max(age),
+            min(age),
+            sd(age))
+
+
 # Only for persons with `drive_thru_ind == 0` and `ct_result` lower than 35
+
+complete_data %>% 
+  filter(drive_thru_ind == 0 & ct_result < 35) %>%
+  group_by(gender) %>% 
+  summarise(mean(age, na.rm = T),
+            max(age),
+            min(age),
+            sd(age))
+
+
+
 # Use two categorical columns in your dataset to create a table (hint: ?count)
 
-
-
+complete_data %>%
+  group_by(gender, dti_yes_no) %>%
+  count()
 
 
  
 
 
 
-# examine row to check if this is the key for exam_joindata
+
 
 
 

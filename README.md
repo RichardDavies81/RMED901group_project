@@ -2,7 +2,7 @@
 
 
 
-Added variables
+# Added variables
 
 rvt = rec_ver_tat, over 100 = High
                  , under 100 = Low
@@ -13,7 +13,12 @@ dti_yes_no = drive_thru_ind converted to yes (=1) or no (=0)
 
 ct_orderset = ct_result x orderset
 
+# New dataframes
 
 Data frames
 
 Supplied datasets combined by ID as a full join into "complete_data"
+
+# Potential issues
+
+Age, many women and men at 119, and one at 138!!!
