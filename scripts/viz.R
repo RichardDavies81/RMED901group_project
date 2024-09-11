@@ -1,0 +1,22 @@
+# Script for visualization of data from tidy data generated in setup.R script
+
+# note- each person chooses min.one question
+
+# Are there any correlated measurements?
+
+
+# Does the time spent waiting for the test result improve during these 100 days that the dataset includes?
+
+
+# Were there more females than males that took the test at a drive through?
+
+
+# Does the distribution of the `ct_result` differ with sex group?
+
+
+
+# Does the distribution of the `ct_result` differ with `payor_group`?
+
+
+
+# Were there more tests in any of the sex groups?
