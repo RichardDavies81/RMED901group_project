@@ -1,3 +1,4 @@
+
 # setup ----
 
 library(tidyverse) # loading package for cleaning of data
@@ -290,3 +291,9 @@ complete_data %>%
 complete_data %>%
   group_by(gender, dti_yes_no) %>%
   count()
+
+## save tidy data ----
+fileName <- paste0("complete_data", Sys.Date(), ".txt")
+
+write_delim(complete_data, 
+            file = here("data", fileName), delim="\t")
