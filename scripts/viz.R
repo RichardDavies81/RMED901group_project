@@ -9,7 +9,18 @@
 
 
 # Were there more females than males that took the test at a drive through?
+dt_by_gender <- complete_data %>%
+  group_by(gender) %>%
+  count(drive_thru_ind)
 
+dt_by_gender
+
+ggplot(data = dt_by_gender, aes(x = drive_thru_ind, y = n, fill = gender)) +
+  geom_bar(stat = "identity", color="black", position=position_dodge())+
+  theme_minimal()
+p + scale_fill_manual(values=c('#999999','#E69F00'))
+# Use brewer color palettes
+p + scale_fill_brewer(palette="Blues")
 
 # Does the distribution of the `ct_result` differ with sex group?
 
@@ -20,3 +31,17 @@
 
 
 # Were there more tests in any of the sex groups?
+tests_by_gender <- complete_data %>%
+  group_by(gender) %>%
+  count(result)
+
+tests_by_gender
+
+ggplot(data = tests_by_gender, aes(x = result, y = n, fill = gender)) +
+  geom_bar(stat = "identity", color="black", position=position_dodge())+
+  theme_minimal()
+p + scale_fill_manual(values=c('#999999','#E69F00'))
+# Use brewer color palettes
+p + scale_fill_brewer(palette="Blues")
+
+
