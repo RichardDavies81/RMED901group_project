@@ -1,3 +1,9 @@
+#1. Create an RStudio project. Done by Richard
+# - create a nice folder structure, e.g., data, scripts folders, and put the
+# dataset in `data`, create a new R script or Rmarkdown file in `scripts`
+# - write a README and update its content as you go on
+
+
 install.packages("readr")
 install.packages("tidyr")
 library(readr)
@@ -28,10 +34,6 @@ data <- data %>%
     pan_day = `pan day`  # Fix: `pan day` needs to be in backticks
   )
 
-# Gives an error "1_test_id" because change has already been performed on original data.
-# Now making a test dataset for coming changes:
-
-test <- data
 
 
 # View the updated data
@@ -162,7 +164,7 @@ data_combined <- data_combined %>%
 data_combined <- data_combined %>%
   mutate(ct_orderset_multiplication = ct_result * orderset)
 
-
+view(data_combined)
 
 # Set the order of columns as: `id, age, gender` and other columns
 # Arrange ID column of your dataset in order of increasing number or alphabetically.
@@ -180,4 +182,15 @@ data_combined <- data_combined %>%
 
 
 # Save the tidy data and explore it
+
+
+#4. Day 7: Create plots that would help answer these questions:
+#  _(each person chooses min.one question)_
+
+#- Are there any correlated measurements?
+#  - Does the time spent waiting for the test result improve during these 100 days that the dataset includes?
+#  - Were there more females than males that took the test at a drive through?
+#  - Does the distribution of the `ct_result` differ with sex group?
+#  - Does the distribution of the `ct_result` differ with `payor_group`?
+#  - Were there more tests in any of the sex groups?
 
