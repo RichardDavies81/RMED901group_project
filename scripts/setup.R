@@ -246,7 +246,11 @@ complete_data %>%
   count()
 
 
- 
+## save tidy data ----
+fileName <- paste0("complete_data", Sys.Date(), ".txt")
+
+write_delim(complete_data, 
+            file = here("data", fileName), delim="\t")
 
 
 
