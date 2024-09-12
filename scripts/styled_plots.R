@@ -341,3 +341,4 @@ if (FALSE) {
     labs(title = "Distribution of CT Result by Gender", x = "Gender", y = "CT Result") +
     theme_minimal()
 }
+
