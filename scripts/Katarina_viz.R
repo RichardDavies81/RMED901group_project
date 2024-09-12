@@ -208,7 +208,7 @@ summary(complete_data) # NAs in ct_results and ct_orderset; lots in payor_group,
 skimr::skim(complete_data)
 naniar::gg_miss_var(complete_data)
 
-# complete cases (not working currently)
+# complete cases
 
 complete.cases(complete_data)
 
@@ -293,8 +293,41 @@ complete_data %>%
   count()
 
 ## save tidy data ----
-fileName <- paste0("complete_data", ".txt")
+fileName <- paste0("complete_data", Sys.Date(), ".txt")
 
 write_delim(complete_data, 
             file = here("data", fileName), delim="\t")
+
+
+#4. Day 7: Create plots that would help answer these questions: 
+#Are there any correlated measurements?
+#  Does the distribution of the `ct_result` differ with sex group?
+
+
+# Correlation matrix heatmap for numeric variables
+
+# Select numeric columns
+numeric_cols <- complete_data %>%
+  select_if(is.numeric)
+
+# Calculate correlation matrix
+correlation_matrix <- cor(numeric_cols, use = "complete.obs")
+
+# Convert correlation matrix to a tidy format for plotting
+correlation_data <- as.data.frame(as.table(correlation_matrix))
+
+# Plot the correlation matrix using ggplot2
+library(ggplot2)
+ggplot(correlation_data, aes(Var1, Var2, fill = Freq)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0, limit = c(-1, 1), space = "Lab", name = "Correlation") +
+  theme_minimal() +
+  labs(x = "Variables", y = "Variables", title = "Correlation Matrix Heatmap") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Boxplot for ct_result by gender
+ggplot(complete_data, aes(x = gender, y = ct_result, fill = gender)) +
+  geom_boxplot() +
+  labs(title = "Distribution of CT Result by Gender", x = "Gender", y = "CT Result") +
+  theme_minimal()
 
