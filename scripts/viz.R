@@ -3,7 +3,11 @@
 
 # note- each person chooses min.one question
 
+
+
 # Are there any correlated measurements?
+
+
 
 
 # Does the time spent waiting for the test result improve during these 100 days that the dataset includes?
@@ -27,6 +31,11 @@
 # note- each person chooses min.one question
 
 # Are there any correlated measurements?
+
+numeric_data <- complete_data %>% select(where(is.numeric))
+numeric_data <- numeric_data[, -1]
+cor(numeric_data, use = "complete.obs")
+
 
 
 # Does the time spent waiting for the test result improve during these 100 days that the dataset includes?
