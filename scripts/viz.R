@@ -46,10 +46,29 @@ corrplot(correlation)
 
 # Does the time spent waiting for the test result improve during these 100 days that the dataset includes?
 
-ggplot(data = complete_data, aes(x = pan_day, y = rec_ver_tat)) +
+
+ggplot(data = complete_data, aes(x = pan_week, y = rec_ver_tat)) +
   geom_point() +
   geom_smooth(method = "lm")
 
+wait_stats <- complete_data %>%
+  select(pan_week, rec_ver_tat) %>%
+  mutate(pan_week = round(pan_week)) %>%
+  group_by(pan_week) %>%
+  summarize(mean_value = mean(rec_ver_tat), std = sd(rec_ver_tat), median(rec_ver_tat))
+  
+by_week <- complete_data %>%
+  select(pan_week, rec_ver_tat) %>%
+  mutate(pan_week = round(pan_week)) %>%
+  group_by(pan_week) 
+
+mean_by_week <- by_week %>%
+  group_by(pan_week) %>%
+  summarise(mean_y = mean(rec_ver_tat))
+
+ggplot(data = by_week, aes(x=as.factor(pan_week), y=rec_ver_tat)) +
+  geom_violin() +
+  ylim(0, 50)
 
 
 # Were there more females than males that took the test at a drive through?
