@@ -45,7 +45,7 @@ Boxplot
   - [x] Names of columns do not start with numbers
   - [x] Names of columns are meaningful
 - [x] Explore data
-- [x] Save tidied data in a file (tidied data is meanwhile called "complete_data")
+- [ ] Save tidied data in a file (tidied data is meanwhile called "complete_data")
 - [x] Update README
 - [x] Create updated codebook for tidy data
 - [X] Style the script(s) using [{styler}](https://styler.r-lib.org/)
@@ -62,11 +62,11 @@ Boxplot
 - [X] Style the script(s) using [{styler}](https://styler.r-lib.org/)
 - [X] Update README
 
-- [ ] Analyze data
-- [ ] Style the script(s) using [{styler}](https://styler.r-lib.org/)
-- [ ] Update README if more files were created
+- [X] Analyze data
+- [X] Style the script(s) using [{styler}](https://styler.r-lib.org/)
+- [X] Update README if more files were created
 
-- [ ] Create Rmd report
-- [ ] Check .html output and adjust Rmd to look nice; repeat if needed
+- [ ] Create Rmd report (not updated yet)
+- [ ] Check .html output and adjust Rmd to look nice; repeat if needed (not updated yet)
 
-- [ ] Check repository if all needed files are present, clean up
+- [ ] Check repository if all needed files are present, clean up (not cleaned yet)
