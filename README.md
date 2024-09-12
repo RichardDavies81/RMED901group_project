@@ -1,8 +1,8 @@
 # RMED901group_project
 
+Comments on the project:
 
-
-# Added variables
+# Added columns
 
 rvt = rec_ver_tat, over 100 = High
                  , under 100 = Low
@@ -12,6 +12,14 @@ pan_weeks = pan_days/7
 dti_yes_no = drive_thru_ind converted to yes (=1) or no (=0)
 
 ct_orderset = ct_result x orderset
+
+# Removed columns
+
+row
+
+test_id
+
+demo_group
 
 # New dataframes
 
@@ -37,13 +45,13 @@ Age, many women and men at 119, and one at 138!!!
 - [x] Create updated codebook for tidy data
 - [X] Style the script(s) using [{styler}](https://styler.r-lib.org/)
 
-- [ ] Manipulate/wrangle data
-  - [ ] Some columns were deleted
-  - [ ] Some columns were added
-- [ ] Save manipulated data in a file
-- [ ] Update README
+- [X] Manipulate/wrangle data
+  - [X] Some columns were deleted
+  - [X] Some columns were added
+- [X] Save manipulated data in a file
+- [X] Update README
 - [ ] Create updated codebook for tidy data
-- [ ] Style the script(s) using [{styler}](https://styler.r-lib.org/)
+- [x] Style the script(s) using [{styler}](https://styler.r-lib.org/)
 
 - [ ] Create plots
 - [ ] Style the script(s) using [{styler}](https://styler.r-lib.org/)
