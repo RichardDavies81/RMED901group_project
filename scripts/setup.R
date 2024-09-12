@@ -56,7 +56,7 @@ sum(is.na(my_data$value))
 my_data <- my_data %>%
   pivot_wider(names_from = time, values_from = value)
 
-unique(my_data$ID) # 11344
+length(unique(my_data$ID)) # 12344
 nrow(my_data) # 15524
 
 # suggested changes to the code for separating time measurement variable
@@ -75,7 +75,7 @@ duplicates <- duplicated(my_data$ID)
 
 duplicated_IDs <- my_data[duplicates, ]
 
-x <- duplicated_IDs[duplicated_IDs$ID == 2191, ] # Indicates clinic name and patient class, likely not an issue
+x <- duplicated_IDs[duplicated_IDs$ID == 2191, ] # duplications are multiple tests 
 
 rm(duplicated_IDs)
 rm(x)
@@ -125,7 +125,8 @@ my_data <- my_data %>%
 # A column showing whether `rec_ver_tat` is higher than 100 or not: values High/Low
 
 my_data <- my_data %>%
-  mutate(rvt = if_else(rec_ver_tat > 100, "High", "Low"))
+  mutate(rvt = if_else(rec_ver_tat > 100, "High", "Low") %>%
+           factor())
 
 
 # A numeric column showing `pan_day` in weeks
@@ -139,7 +140,8 @@ my_data <- my_data %>%
 unique(my_data$drive_thru_ind)
 
 my_data <- my_data %>%
-  mutate(dti_yes_no = if_else(drive_thru_ind == 1, "Yes", "No"))
+  mutate(dti_yes_no = if_else(drive_thru_ind == 1, "Yes", "No") %>% 
+           factor())
 
 
 # A numeric column showing multiplication of `ct_result` and `orderset` for each person
@@ -155,7 +157,7 @@ my_data <- my_data %>%
 
 # Arrange ID column of your dataset in order of increasing number or alphabetically.
 
-test <- my_data %>%
+my_data <- my_data %>%
   arrange(ID)
 
 

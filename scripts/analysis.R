@@ -4,6 +4,11 @@
 
 # Do your chances of getting a positive test increase with the number of tests taken?
 
+test <- complete_data %>%
+  count(ID)
+  
+
+
 
 
 # Are there more positive tests in the drive-through?
