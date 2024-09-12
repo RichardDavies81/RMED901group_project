@@ -208,7 +208,7 @@ summary(complete_data) # NAs in ct_results and ct_orderset; lots in payor_group,
 skimr::skim(complete_data)
 naniar::gg_miss_var(complete_data)
 
-# complete cases
+# complete cases (not working currently)
 
 complete.cases(complete_data)
 
