@@ -37,8 +37,12 @@ numeric_data <- numeric_data[, -1]
 cor(numeric_data, use = "complete.obs")
 
 
-
 # Does the time spent waiting for the test result improve during these 100 days that the dataset includes?
+
+ggplot(data = complete_data, aes(x = pan_day, y = rec_ver_tat)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+
 
 
 # Were there more females than males that took the test at a drive through?
