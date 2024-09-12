@@ -31,6 +31,11 @@ Supplied datasets combined by ID as a full join into "complete_data"
 
 Age, many women and men at 119, and one at 138!!!
 
+# Plots
+
+Correlation matrix heatmap
+
+Boxplot
 
 # Checklist for the final project:
 - [X] Create GitHub repo and Rprojects
@@ -50,12 +55,12 @@ Age, many women and men at 119, and one at 138!!!
   - [X] Some columns were added
 - [X] Save manipulated data in a file
 - [X] Update README
-- [ ] Create updated codebook for tidy data
+- [X] Create updated codebook for tidy data
 - [x] Style the script(s) using [{styler}](https://styler.r-lib.org/)
 
-- [ ] Create plots
-- [ ] Style the script(s) using [{styler}](https://styler.r-lib.org/)
-- [ ] Update README
+- [X] Create plots
+- [X] Style the script(s) using [{styler}](https://styler.r-lib.org/)
+- [X] Update README
 
 - [ ] Analyze data
 - [ ] Style the script(s) using [{styler}](https://styler.r-lib.org/)
