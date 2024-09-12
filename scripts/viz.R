@@ -32,9 +32,16 @@
 
 # Are there any correlated measurements?
 
+library(rstatix)
+library(corrplot)
+
 numeric_data <- complete_data %>% select(where(is.numeric))
-numeric_data <- numeric_data[, -1]
-cor(numeric_data, use = "complete.obs")
+numeric_data <- numeric_data[, c(-1, -8, -9)] # ID, ct_orderset, pan_week removed) 
+
+correlation <- round(cor(numeric_data, use = "complete.obs"), 1)
+
+cor_pmat(numeric_data) # p values
+corrplot(correlation)
 
 
 # Does the time spent waiting for the test result improve during these 100 days that the dataset includes?
