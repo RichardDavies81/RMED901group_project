@@ -7,13 +7,15 @@ library(tidyverse) # loading package for cleaning of data
 library(here) # for targeting directory
 here()
 
-# dir.create("data")
-# dir.create("figures")
-# dir.create("processed_data")
-# dir.create("results")
-# dir.create("scripts")
+# file structure
 
-## explore_dataset.txt and edit dataset----
+dir.create("data")
+dir.create("figures")
+dir.create("processed_data")
+dir.create("results")
+dir.create("scripts")
+
+## explore_dataset.txt and convert to tidy dataset----
 
 
 my_data <- read_delim("data/exam_dataset.txt", col_names = TRUE)
@@ -34,42 +36,19 @@ my_data <- my_data %>%
     sep = " "
   )
 
-nrow(my_data) # check length of dataset, 12344
-length(unique(my_data$ID)) # check duplication of ID, 34048
 
 
-# identify any pure duplications
 
-nrow(my_data)
-nrow(distinct(my_data))
+# identify any pure duplications and remove
+
+nrow(my_data) # check length of dataset, n = 34048
+nrow(my_data) - nrow(distinct(my_data)) # duplications = 3000
 
 my_data <- distinct(my_data, .keep_all = FALSE)
+nrow(my_data) # n = 31048
 
 
-# work on widen time measurement
-
-my_data <- rename(my_data, time = "time measurement", value = .value)
-
-sum(is.na(my_data$time))
-sum(is.na(my_data$value))
-
-my_data <- my_data %>%
-  pivot_wider(names_from = time, values_from = value)
-
-length(unique(my_data$ID)) # 12344
-nrow(my_data) # 15524
-
-# suggested changes to the code for separating time measurement variable
-# my_data %>% my_data %>%
-#  mutate(col_rec_tat = if_else(time_measurement == "col_rec_tat", .value, NA),
-#        rec_ver_tat = if_else(time_measurement == "rec_ver_tat", .value, NA))
-
-# We then need to remove .value and time measurement
-# my_data %>% my_data %>%
-#  select(-time_measurement, -.value)
-
-
-# look for duplication in ID to further assess
+# Examine instances of the same ID
 
 duplicates <- duplicated(my_data$ID)
 
@@ -81,14 +60,28 @@ rm(duplicated_IDs)
 rm(x)
 rm(duplicates)
 
-# noticed an issue with pan day- rename
+
+
+
+# Convert .value and time measurement needs to be pivoted wider
+
+my_data <- rename(my_data, time = "time measurement", value = .value)
+
+sum(is.na(my_data$time))  # checking for potential NAs that may affect process
+sum(is.na(my_data$value))
+
+my_data <- my_data %>%
+  pivot_wider(names_from = time, values_from = value)
+
+
+# Fix issues with column names
 
 my_data <- rename(my_data, pan_day = "pan day", test_id = "1_test_id")
 
 
-# change data types
+# Fix column types
 
-summary(my_data) # everything is a character, OH NO!
+summary(my_data) 
 colnames(my_data)
 
 my_data <- my_data %>%
@@ -113,38 +106,31 @@ my_data <- my_data %>%
 
 
 
-# Remove unnecessary columns from your dataframe: `row, test_id, demo_group` ----
+# Remove unnecessary columns from your dataframe: `row, test_id, demo_group` 
 
 colnames(my_data)
 
 my_data <- my_data %>%
   select(-row, -test_id, -demo_group)
 
-# making new columns ----
 
-# A column showing whether `rec_ver_tat` is higher than 100 or not: values High/Low
+# Add new columns, 
+  # rec_ver_tat is higher than 100 or not: values High/Low (rvt)
+  # numeric column showing `pan_day` (pan_weeks)
+  # column showing `drive_thru_ind` as Yes/No
+  # A numeric column showing multiplication of `ct_result` and `orderset` for each person
 
 my_data <- my_data %>%
   mutate(rvt = if_else(rec_ver_tat > 100, "High", "Low") %>%
            factor())
 
-
-# A numeric column showing `pan_day` in weeks
-
 my_data <- my_data %>%
   mutate(pan_week = pan_day / 7)
-
-
-# A column showing `drive_thru_ind` as Yes/No
-
-unique(my_data$drive_thru_ind)
 
 my_data <- my_data %>%
   mutate(dti_yes_no = if_else(drive_thru_ind == 1, "Yes", "No") %>% 
            factor())
 
-
-# A numeric column showing multiplication of `ct_result` and `orderset` for each person
 
 my_data <- my_data %>%
   mutate(ct_orderset = ct_result * orderset)
@@ -161,7 +147,7 @@ my_data <- my_data %>%
   arrange(ID)
 
 
-# Read and join the additional dataset to your main dataset (using full join as can exclude later). ----
+# Read and join the antibody dataset via ID to my_data
 
 join_data <- read_delim("data/exam_joindata.txt", col_names = TRUE)
 join_data <- rename(join_data, ID = id) # renamed to match full_join
@@ -202,19 +188,18 @@ my_data_nd <- unique(my_data)
 my_data_nd
 
 
-# Explore combined dataset ----
+## explore combined data sets ----
 
 # comment on the missing variables.
 
+nrow(complete_data) # n = 155524
 summary(complete_data) # NAs in ct_results and ct_orderset; lots in payor_group, patient_class, antibody
 skimr::skim(complete_data)
 naniar::gg_miss_var(complete_data)
 
-# complete cases (not working currently)
+# complete cases
 
-complete.cases(complete_data)
-
-percent_complete <- sum(complete.cases(complete_data)) / nrow(complete_data) * 100 # 83% complete cases.... double check this later as looks incorrect with previous join_data being 200 Obs
+percent_complete <- (sum(complete.cases(complete_data)) / nrow(complete_data)) * 100 # 0.83% complete cases, due to antibody data
 
 
 
@@ -229,10 +214,8 @@ complete_data %>%
     sd(age)
   )
 
-# Boring very similar
 
-
-# Stratify your data by a categorical column and report min, max, mean and sd of a numeric column for a defined set of observations - use pipe!
+# Stratify your data by a categorical column and report min, max, mean and sd of a numeric column for a defined set of observations
 
 
 # Only for persons with `patient_class == inpatient`
@@ -294,9 +277,18 @@ complete_data %>%
   group_by(gender, dti_yes_no) %>%
   count()
 
+
 ## save tidy data ----
 fileName <- paste0("complete_data", ".txt")
 
 write_delim(complete_data, 
-            file = here("data", fileName), delim="\t")
+            file = here("processed_data", fileName), delim="\t")
+
+
+
+
+
+
+
+
 
