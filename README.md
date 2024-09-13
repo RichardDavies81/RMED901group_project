@@ -9,11 +9,11 @@ description of data: The data is composed of two datasets with otherlapping pati
 
 # Folder structure
 The folders are organized as the following
-main: R_markdown.Rmd
+
 data: exam.dataset.txt, exam_joindata.txt, codebook_exam_data.html, exam.descr.md
 processed_data: complete_data.txt
 figures: (if we are not using this it can be removed)
-results: (consider moving the R-markdown file to here for the report)
+results: R_markdown.Rmd
 scripts: viz.R, setup.R, analysis.R
 
 
@@ -63,7 +63,7 @@ A summary for the plot types to address the following questions and interpretati
 corrplot for visulization and cor_pmat. High degee of correlation with age and orderset, pan_day and col_rec_tat. Note data is right skewed due to many infants in the dataset
 
 # Does the time spent waiting for the test result improve during these 100 days that the dataset includes?
-Violin plot and scatterplot indicates little change over the pandemic with mean rec_var_tat staying at approximately 5.5 to 5.8 hrs
+Violin plot and scatterplot (ggplot, geom_violin and geom_point) indicates little change over the pandemic with mean rec_var_tat staying at approximately 5.5 to 5.8 hrs
 
 
 # Were there more females than males that took the test at a drive through?
@@ -76,12 +76,12 @@ Violin plot and scatterplot indicates little change over the pandemic with mean 
 
 # Do your chances of getting a positive test increase with the number of tests taken?
 
-mean tests for individuals who never tested positive = 1.26 compared to 1.09 for those who have a positive test. Wilcox test indicates the opposite, that those with less test are more likely to have had a positive test.
+mean tests for individuals who never tested positive = 1.26 compared to 1.09 for those who have a positive test. Wilcox test (wilcox.test) indicates the opposite, that those with less test are more likely to have had a positive test.
 
 
 # Are there more positive tests in the drive-through?
 
-Pearson's Chi-squared test a greater incidence of positive tests through the drive through
+Pearson's Chi-squared test (chisq.test) indicate a greater incidence of positive tests through the drive through
 
 
 # Is the age of the individual associated with whether the test result is negative or positive?

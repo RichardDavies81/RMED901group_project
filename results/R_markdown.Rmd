@@ -1,0 +1,42 @@
+---
+title: "Group 4 Report"
+author: "Richard Davies, Katarina Lundervol, Pakwanja Desiree Twea"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## TidyR data setup
+
+The data is composed of two datasets with other lapping patients (see ID), exam.dataset.txt consists of PCR rdts for COVID19 during the 2020 pandemic, data includes information on patients including clinic, gender, test results week of pandemic, and exam_joindata.txt containing endpoint titer data from some of the patients (information can be found in the files codebook_exam_data.html, exam.descr.md). Data files were joined and processed as per conventions of tidyR for later visulization and analysis.
+
+An overview of the data follows 
+
+```{r cars}
+summary(complete_data)
+```
+
+
+```{r}
+naniar::gg_miss_var(complete_data)
+```
+
+
+
+
+## Descriptive plots
+
+Visulization was done using a number of plots. Significant correlations are observiable with age 
+
+```{r pressure, echo=FALSE}
+cor_pmat(numeric_data)
+```
+
+```{r pressure, echo=FALSE}
+correlation <- round(cor(numeric_data, use = "complete.obs"), 1) # Makes object 
+corrplot(correlation)
+```
+
