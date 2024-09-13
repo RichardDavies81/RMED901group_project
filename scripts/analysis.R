@@ -2,7 +2,7 @@
 
 # note- each person chooses one question
 
-# Do your chances of getting a positive test increase with the number of tests taken?
+# Do your chances of getting a positive test increase with the number of tests taken? No, stronger association with less tests
 
 
 positive_visits <- complete_data %>%
@@ -10,6 +10,22 @@ positive_visits <- complete_data %>%
   group_by(ID) %>%
   count(positive, ID)
 
+positive_visits <- positive_visits[, -1]
+positive_visits$positive <- factor(positive_visits$positive)
+levels(positive_visits$positive) <- c("negative", "positive")
+
+positive_visits %>% 
+  group_by(positive) %>%
+  summarize(mean(n), median(n))
+
+
+ggplot(positive_visits, aes(x = positive, y = n)) +
+  geom_boxplot() +
+  ylim(0, 10)
+
+positive_visits %>% 
+  wilcox.test(n ~ positive, data = .) %>%
+  broom::tidy()
 
 chisq.test(x = complete_data$dti_yes_no, y = complete_data$result)
 

@@ -8,12 +8,16 @@ library(corrplot)
 library(ggplot2)
 
 numeric_data <- complete_data %>% select(where(is.numeric))
-numeric_data <- numeric_data[, c(-1, -8, -9)] # ID, ct_orderset, pan_week removed) 
+numeric_data <- numeric_data[, c(-1, -8, -9)] # ID, ct_orderset, pan_week removed due to inderpendence) 
 
-correlation <- round(cor(numeric_data, use = "complete.obs"), 1)
-
+round(cor(numeric_data, use = "complete.obs"), 1) # Makes object 
 cor_pmat(numeric_data) # p values
-corrplot(correlation)
+corrplot(correlation) # Note large skew for age
+
+ggplot(data = numeric_data, aes(x = age, y = pan_day)) +
+  geom_point()
+
+
 
 # Does the time spent waiting for the test result improve during these 100 days that the dataset includes?
 
