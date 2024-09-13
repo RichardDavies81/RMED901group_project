@@ -21,9 +21,10 @@ Project information:
 
 # 1) Data clean summary
 
-Script use: setup.R (see folder: scripts) 
+Script used: setup.R (see folder: scripts) 
 
 Packages used: "tidyverse", "here"
+
 The files exam.dataset.txt and exam_joindata.txt were combined in a tidyr format, and a clean dataset was produced (see complete_data.txt, folder: processed data. 
 The following changes were made to the data. 
 Column "subject", separated into "ID", "first_name", "last_name"
@@ -44,21 +45,51 @@ Columns were assigned as the following data types:
   factor- gender, clinic name, result, drive_thru_ind, payor_group, patient_class, rvt
 
 
-# Potential issues noted
+## Potential issues noted
 
 Age: many women and men at 119, and one at 138
 Antibody endpoint titer data is limited (300 samples)
 Data should be anonymized via removal of last and first name of patients
 
 
+# 2) Plots
+
+Script used: viz.R (see folder: scripts) 
+
+Packages used: "rstatix", "corrplot", "ggplot2"
+
+A summary for the plot types to address the following questions and interpretations are listed below
+# Are there any correlated measurements?
+corrplot for visulization and cor_pmat. High degee of correlation with age and orderset, pan_day and col_rec_tat. Note data is right skewed due to many infants in the dataset
+
+# Does the time spent waiting for the test result improve during these 100 days that the dataset includes?
+Violin plot and scatterplot indicates little change over the pandemic with mean rec_var_tat staying at approximately 5.5 to 5.8 hrs
 
 
+# Were there more females than males that took the test at a drive through?
+# Does the distribution of the `ct_result` differ with sex group?
+# Does the distribution of the `ct_result` differ with `payor_group`?
+# Were there more tests in any of the sex groups?
 
-# Plots
 
-Correlation matrix heatmap
+# 3) Analysis
 
-Boxplot
+# Do your chances of getting a positive test increase with the number of tests taken?
+
+mean tests for individuals who never tested positive = 1.26 compared to 1.09 for those who have a positive test. Wilcox test indicates the opposite, that those with less test are more likely to have had a positive test.
+
+
+# Are there more positive tests in the drive-through?
+
+Pearson's Chi-squared test a greater incidence of positive tests through the drive through
+
+
+# Is the age of the individual associated with whether the test result is negative or positive?
+
+# Is there a difference in the distributions of `ct_results` between different outcome groups (`result`)?
+
+# Does the number of positive tests depend on the `pan_day`?
+
 
 # Checklist for the final project:
 - [X] Create GitHub repo and Rprojects
