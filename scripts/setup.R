@@ -157,7 +157,7 @@ complete_data <- my_data %>%
   full_join(join_data, join_by(ID))
 
 
-########## Clean up code with pipes ##########
+### Clean up code with pipes ----
 my_data <- read_delim("data/exam_dataset.txt", col_names = TRUE)
 
 my_data <- my_data %>%
@@ -186,6 +186,47 @@ my_data <- my_data %>%
 my_data_nd <- unique(my_data)
 
 my_data_nd
+
+
+### Clean up code with pipes (Alternative) ----
+
+test_join <- read_delim("data/exam_joindata.txt", col_names = TRUE) %>%
+  rename(ID = id)
+
+test <- read_delim("data/exam_dataset.txt", col_names = TRUE) %>%
+  separate(col = "subject", into = c("ID", "first_name", "last_name"), sep = " ") %>%
+  separate(col = "gender-age", into = c("gender", "age"), sep = "-") %>%
+  distinct(.keep_all = FALSE) %>%
+  rename("test_id" = "1_test_id", "pan_day" = "pan day", "time_measurement" = "time measurement", "value" = ".value") %>%
+  pivot_wider(names_from = time_measurement, values_from = value) %>%
+  mutate(ID = as.numeric(ID),
+         gender = as.factor(gender),
+         age = as.numeric(age),
+         clinic_name = as.factor(clinic_name),
+         result = as.factor(result),
+         demo_group = as.factor(demo_group),
+         drive_thru_ind = as.factor(drive_thru_ind),
+         ct_result = as.numeric(ct_result),
+         orderset = as.numeric(orderset),
+         payor_group = as.factor(payor_group),
+         patient_class = as.factor(patient_class),
+         pan_day = as.numeric(pan_day),
+         test_id = as.factor(test_id),
+         row = as.numeric(row),
+         rec_ver_tat = as.numeric(rec_ver_tat),
+         col_rec_tat = as.numeric(col_rec_tat)
+  ) %>%
+  select(-row, -test_id, -demo_group) %>%
+  arrange(ID) %>%
+  mutate(rvt = if_else(rec_ver_tat > 100, "High", "Low")) %>%
+  mutate(pan_week = pan_day / 7) %>%
+  mutate(dti_yes_no = if_else(drive_thru_ind == 1, "Yes", "No")) %>%
+  mutate(ct_orderset = ct_result * orderset) %>%
+  select(ID, age, gender, everything()) %>%
+  full_join(test_join, join_by(ID))
+
+
+
 
 
 ## explore combined data sets ----
