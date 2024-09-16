@@ -1,30 +1,162 @@
 ---
-title: "Report - test"
-author: "Katarina Lundervold"
+title: "Group 4 Report"
+author: "Richard Davies, Katarina Lundervol, Pakwanja Desiree Twea"
 date: "`r Sys.Date()`"
-output: html_document
+output: pdf_document
+Requred package: tinytex, tidyverse, here, rstatix, corrplot, ggplot2
 ---
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## TidyR data setup
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r include=FALSE}
+library(tinytex)
+library(tidyverse)
+library(here)
+library(rstatix)
+library(corrplot)
+library(ggplot2)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+The data is composed of two datasets with other lapping patients (see ID), exam.dataset.txt consists of PCR rdts for COVID19 during the 2020 pandemic, data includes information on patients including clinic, gender, test results week of pandemic, and exam_joindata.txt containing endpoint titer data from some of the patients (information can be found in the files codebook_exam_data.html, exam.descr.md). Data files were joined and processed as per conventions of tidyR for later visulization and analysis.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r include=FALSE}
+test_join <- read_delim("data/exam_joindata.txt", col_names = TRUE) %>%
+  rename(ID = id)
+
+complete_data <- read_delim("data/exam_dataset.txt", col_names = TRUE) %>%
+  separate(col = "subject", into = c("ID", "first_name", "last_name"), sep = " ") %>%
+  separate(col = "gender-age", into = c("gender", "age"), sep = "-") %>%
+  distinct(.keep_all = FALSE) %>%
+  rename("test_id" = "1_test_id", "pan_day" = "pan day", "time_measurement" = "time measurement", "value" = ".value") %>%
+  pivot_wider(names_from = time_measurement, values_from = value) %>%
+  mutate(ID = as.numeric(ID),
+         gender = as.factor(gender),
+         age = as.numeric(age),
+         clinic_name = as.factor(clinic_name),
+         result = as.factor(result),
+         demo_group = as.factor(demo_group),
+         drive_thru_ind = as.factor(drive_thru_ind),
+         ct_result = as.numeric(ct_result),
+         orderset = as.numeric(orderset),
+         payor_group = as.factor(payor_group),
+         patient_class = as.factor(patient_class),
+         pan_day = as.numeric(pan_day),
+         test_id = as.factor(test_id),
+         row = as.numeric(row),
+         rec_ver_tat = as.numeric(rec_ver_tat),
+         col_rec_tat = as.numeric(col_rec_tat)
+  ) %>%
+  select(-row, -test_id, -demo_group) %>%
+  arrange(ID) %>%
+  mutate(rvt = if_else(rec_ver_tat > 100, "High", "Low")) %>%
+  mutate(pan_week = pan_day / 7) %>%
+  mutate(dti_yes_no = if_else(drive_thru_ind == 1, "Yes", "No")) %>%
+  mutate(ct_orderset = ct_result * orderset) %>%
+  select(ID, age, gender, everything()) %>%
+  full_join(test_join, join_by(ID))
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+An overview of the data follows 
+
+```{r}
+summary(complete_data)
+```
+
+
+```{r}
+naniar::gg_miss_var(complete_data)
+```
+
+
+
+
+## Descriptive plots
+
+Visulization was done using a number of plots. Significant correlations are observiable with age, and orderset and days since the pandemic. Indicating early in the pandemic individuals seen in the clinic were usually young adults and children  
+
+```{r, echo=FALSE}
+numeric_data <- complete_data %>% select(where(is.numeric))
+numeric_data <- numeric_data[, c(-1, -8, -9)] # ID, ct_orderset, pan_week removed due to inderpendence) 
+
+correlation <- round(cor(numeric_data, use = "complete.obs"), 1)
+```
+
+
+
+```{r, echo=FALSE}
+cor_pmat(numeric_data)
+```
+
+```{r, echo=FALSE}
+correlation <- round(cor(numeric_data, use = "complete.obs"), 1) # Makes object 
+corrplot(correlation)
+```
+```{r, echo = FALSE}
+ggplot(data = numeric_data, aes(y = age, x = pan_day)) +
+  geom_point()
+```
+Suprisingly over the course of the pandemic there was no indication that the wait time from collection of patient sample to PCR test result was reduced.
+
+```{r include=FALSE}
+wait_stats <- complete_data %>%
+  select(pan_week, rec_ver_tat) %>%
+  mutate(pan_week = round(pan_week)) %>%
+  group_by(pan_week) %>%
+  summarize(mean_value = mean(rec_ver_tat), std = sd(rec_ver_tat), median(rec_ver_tat))
+
+```
+
+
+```{r, echo =FALSE}
+wait_stats
+```
+
+```{r, echo=FALSE}
+ggplot(data = complete_data, aes(x = pan_week, y = rec_ver_tat)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+## Statistics
+
+wilcox test indicated that the more tests from a single patient does not associate with increase positive test, in fact the opposite trend was noted.
+
+```{r include=FALSE}
+positive_visits <- complete_data %>%
+  mutate(positive = if_else(result == "positive", 1, 0)) %>%
+  group_by(ID) %>%
+  count(positive, ID)
+
+positive_visits <- positive_visits[, -1]
+positive_visits$positive <- factor(positive_visits$positive)
+levels(positive_visits$positive) <- c("negative", "positive")
+
+positive_visits %>% 
+  group_by(positive) %>%
+  summarize(mean(n), median(n))
+```
+
+
+```{r, , echo=FALSE}
+positive_visits %>% 
+  wilcox.test(n ~ positive, data = .) %>%
+  broom::tidy()
+```
+
+While drive-through use was associated with an increase in positive tests
+
+
+```{r, , echo=FALSE}
+chisq.test(x = positive_visits$n, y = positive_visits$positive, simulate.p.value = TRUE)
+```
+
+
