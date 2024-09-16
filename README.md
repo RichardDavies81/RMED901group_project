@@ -7,19 +7,19 @@ description: Learning tasks for the course RMED901 Tidy. Files provided by Julia
 
 description of data: The data is composed of two datasets with otherlapping patients (see ID), exam.dataset.txt consists of PCR rdts for COVID19 during the 2020 pandemic, data includes information on patientS including clinic, gender, test results week of pandemic, and exam_joindata.txt containing endpoint titer data from some of the patients (information can be found in the files codebook_exam_data.html, exam.descr.md)
 
-# Folder structure
+### Folder structure
 The folders are organized as the following
 
 data: exam.dataset.txt, exam_joindata.txt, codebook_exam_data.html, exam.descr.md
 processed_data: complete_data.txt
 figures: (if we are not using this it can be removed)
-results: R_markdown.Rmd
+main directory: R_markdown.Rmd
 scripts: viz.R, setup.R, analysis.R
 
 
 Project information:
 
-# 1) Data clean summary
+## 1) Data clean summary
 
 Script used: setup.R (see folder: scripts) 
 
@@ -45,53 +45,53 @@ Columns were assigned as the following data types:
   factor- gender, clinic name, result, drive_thru_ind, payor_group, patient_class, rvt
 
 
-## Potential issues noted
+### Potential issues noted
 
 Age: many women and men at 119, and one at 138
 Antibody endpoint titer data is limited (300 samples)
 Data should be anonymized via removal of last and first name of patients
 
 
-# 2) Plots
+## 2) Plots
 
 Script used: viz.R (see folder: scripts) 
 
 Packages used: "rstatix", "corrplot", "ggplot2"
 
 A summary for the plot types to address the following questions and interpretations are listed below
-# Are there any correlated measurements?
+### Are there any correlated measurements?
 corrplot for visulization and cor_pmat. High degee of correlation with age and orderset, pan_day and col_rec_tat. Note data is right skewed due to many infants in the dataset
 
-# Does the time spent waiting for the test result improve during these 100 days that the dataset includes?
+### Does the time spent waiting for the test result improve during these 100 days that the dataset includes?
 Violin plot and scatterplot (ggplot, geom_violin and geom_point) indicates little change over the pandemic with mean rec_var_tat staying at approximately 5.5 to 5.8 hrs
 
 
-# Were there more females than males that took the test at a drive through?
-# Does the distribution of the `ct_result` differ with sex group?
-# Does the distribution of the `ct_result` differ with `payor_group`?
-# Were there more tests in any of the sex groups?
+### Were there more females than males that took the test at a drive through?
+### Does the distribution of the `ct_result` differ with sex group?
+### Does the distribution of the `ct_result` differ with `payor_group`?
+### Were there more tests in any of the sex groups?
 
 
-# 3) Analysis
+## 3) Analysis
 
-# Do your chances of getting a positive test increase with the number of tests taken?
+### Do your chances of getting a positive test increase with the number of tests taken?
 
 mean tests for individuals who never tested positive = 1.26 compared to 1.09 for those who have a positive test. Wilcox test (wilcox.test) indicates the opposite, that those with less test are more likely to have had a positive test.
 
 
-# Are there more positive tests in the drive-through?
+### Are there more positive tests in the drive-through?
 
 Pearson's Chi-squared test (chisq.test) indicate a greater incidence of positive tests through the drive through
 
 
-# Is the age of the individual associated with whether the test result is negative or positive?
+### Is the age of the individual associated with whether the test result is negative or positive?
 
-# Is there a difference in the distributions of `ct_results` between different outcome groups (`result`)?
+### Is there a difference in the distributions of `ct_results` between different outcome groups (`result`)?
 
-# Does the number of positive tests depend on the `pan_day`?
+### Does the number of positive tests depend on the `pan_day`?
 
 
-# Checklist for the final project:
+## Checklist for the final project:
 - [X] Create GitHub repo and Rprojects
 - [X] Tidy the data
   - [x] Each row is one observation, each column is one variable
