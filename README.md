@@ -99,7 +99,7 @@ Pearson's Chi-squared test (chisq.test) indicate a greater incidence of positive
   - [x] Names of columns do not start with numbers
   - [x] Names of columns are meaningful
 - [x] Explore data
-- [X] Save tidied data in a file (tidied data is meanwhile called "complete_data")
+- [X] Save tidied data in a file 
 - [x] Update README
 - [x] Create updated codebook for tidy data
 - [X] Style the script(s) using [{styler}](https://styler.r-lib.org/)
@@ -120,7 +120,6 @@ Pearson's Chi-squared test (chisq.test) indicate a greater incidence of positive
 - [X] Style the script(s) using [{styler}](https://styler.r-lib.org/)
 - [X] Update README if more files were created
 
-- [ ] Create Rmd report (not updated yet)
-- [ ] Check .html output and adjust Rmd to look nice; repeat if needed (not updated yet)
-
-- [ ] Check repository if all needed files are present, clean up (not cleaned yet)
+- [X] Create Rmd report 
+- [X] Check .html output and adjust Rmd to look nice; repeat if needed
+- [X] Check repository if all needed files are present, clean up 
