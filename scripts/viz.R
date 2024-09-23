@@ -10,9 +10,9 @@ library(Hmisc)
 library(plyr)
 
 numeric_data <- complete_data %>% select(where(is.numeric))
-numeric_data <- numeric_data[, c(-1, -8, -9)] # ID, ct_orderset, pan_week removed due to inderpendence) 
+numeric_data <- numeric_data[, c(-1, -8, -9)] # ID, ct_orderset, pan_week removed due to inderpendence)
 
-correlation <- round(cor(numeric_data, use = "complete.obs"), 1) # Makes object 
+correlation <- round(cor(numeric_data, use = "complete.obs"), 1) # Makes object
 cor_pmat(numeric_data) # p values
 corrplot(correlation) # Note large skew for age
 
@@ -32,17 +32,17 @@ wait_stats <- complete_data %>%
   mutate(pan_week = round(pan_week)) %>%
   group_by(pan_week) %>%
   summarize(mean_value = mean(rec_ver_tat), std = sd(rec_ver_tat), median(rec_ver_tat))
-  
+
 by_week <- complete_data %>%
   select(pan_week, rec_ver_tat) %>%
   mutate(pan_week = round(pan_week)) %>%
-  group_by(pan_week) 
+  group_by(pan_week)
 
 mean_by_week <- by_week %>%
   group_by(pan_week) %>%
   summarise(mean_y = mean(rec_ver_tat))
 
-ggplot(data = by_week, aes(x=as.factor(pan_week), y=rec_ver_tat)) +
+ggplot(data = by_week, aes(x = as.factor(pan_week), y = rec_ver_tat)) +
   geom_violin() +
   ylim(0, 50)
 
@@ -65,10 +65,12 @@ colnames(dt_and_gender_df) <- c("Gender", "Drive_Through", "Count")
 # Plot
 ggplot(dt_and_gender_df, aes(x = Drive_Through, y = Count, fill = Gender)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Gender Distribution of Drive-Through Test Participants",
-       x = "Drive-Through Indicator", 
-       y = "Count") +
-  scale_fill_manual(values = c("#a6cee3", "#1f78b4")) +  
+  labs(
+    title = "Gender Distribution of Drive-Through Test Participants",
+    x = "Drive-Through Indicator",
+    y = "Count"
+  ) +
+  scale_fill_manual(values = c("#a6cee3", "#1f78b4")) +
   theme_minimal()
 
 
@@ -81,17 +83,19 @@ ct_result_dist <- complete_data %>%
   group_by(gender) %>%
   count(ct_result)
 
-ggplot(ct_result_dist, 
-       aes(
-         x = 1:nrow(ct_result_dist),
-         y = ct_result,
-         group = gender,
-         color = gender)
-) + 
+ggplot(
+  ct_result_dist,
+  aes(
+    x = 1:nrow(ct_result_dist),
+    y = ct_result,
+    group = gender,
+    color = gender
+  )
+) +
   geom_point() +
   facet_wrap(vars(gender))
 
-#one -way anova test
+# one -way anova test
 ct_result_gender_anova <- aov(complete_data$ct_result ~ complete_data$gender, data = complete_data)
 summary(ct_result_gender_anova)
 
@@ -110,8 +114,8 @@ ggplot(
     y = ct_result,
     group = payor_group,
     color = payor_group
-    )
-  ) +
+  )
+) +
   geom_point() +
   facet_wrap(vars(payor_group))
 
@@ -126,15 +130,15 @@ tests_by_gender <- complete_data %>%
 tests_by_gender
 
 ggplot(data = tests_by_gender, aes(x = result, y = n, fill = gender)) +
-  geom_bar(stat = "identity", color="black", position=position_dodge())+
+  geom_bar(stat = "identity", color = "black", position = position_dodge()) +
   theme_minimal() +
-  scale_fill_manual(values=c('#999999','#E69F00')) +
-# Use brewer color palettes
-  scale_fill_brewer(palette="Blues")
+  scale_fill_manual(values = c("#999999", "#E69F00")) +
+  # Use brewer color palettes
+  scale_fill_brewer(palette = "Blues")
 
 test_and_gender <- table(complete_data$gender, complete_data$result)
 test_and_gender
 
-#chi-square test
+# chi-square test
 test_and_gender_df <- as.data.frame(test_and_gender)
 print(chisq.test(test_and_gender))
