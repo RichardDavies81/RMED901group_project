@@ -16,7 +16,7 @@ correlation <- round(cor(numeric_data, use = "complete.obs"), 1) # Makes object
 cor_pmat(numeric_data) # p values
 corrplot(correlation) # Note large skew for age
 
-ggplot(data = numeric_data, aes(x = age, y = pan_day)) +
+ggplot(data = numeric_data, aes(y = age, x = pan_day)) +
   geom_point()
 
 
@@ -32,6 +32,8 @@ wait_stats <- complete_data %>%
   mutate(pan_week = round(pan_week)) %>%
   group_by(pan_week) %>%
   summarize(mean_value = mean(rec_ver_tat), std = sd(rec_ver_tat), median(rec_ver_tat))
+
+wait_stats
 
 by_week <- complete_data %>%
   select(pan_week, rec_ver_tat) %>%

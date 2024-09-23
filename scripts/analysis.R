@@ -36,6 +36,10 @@ table <- complete_data %>%
   group_by(dti_yes_no, result) %>%
   count() 
 
+table
+
+
+
 chisq.test(x = positive_visits$n, y = positive_visits$positive)
 
 
