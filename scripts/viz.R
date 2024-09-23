@@ -6,6 +6,8 @@
 library(rstatix)
 library(corrplot)
 library(ggplot2)
+library(Hmisc)
+library(plyr)
 
 numeric_data <- complete_data %>% select(where(is.numeric))
 numeric_data <- numeric_data[, c(-1, -8, -9)] # ID, ct_orderset, pan_week removed due to inderpendence) 
@@ -55,14 +57,29 @@ dt_by_gender <- complete_data %>%
 
 dt_by_gender
 
-ggplot(data = dt_by_gender, aes(x = drive_thru_ind, y = n, fill = gender)) +
-  geom_bar(stat = "identity", color="black", position=position_dodge())+
-  theme_minimal() + 
-  scale_fill_manual(values=c('#999999','#E69F00')) +
-# Use brewer color palettes
-  scale_fill_brewer(palette="Blues")
+dt_and_gender <- table(complete_data$gender, complete_data$drive_thru_ind)
+# Create dt_and_gender as a data frame from the table and analyse using the chi-square test
+dt_and_gender_df <- as.data.frame(dt_and_gender)
+print(chisq.test(dt_and_gender))
+
+# Rename columns
+colnames(dt_and_gender_df) <- c("Gender", "Drive_Through", "Count")
+
+# Plot
+ggplot(dt_and_gender_df, aes(x = Drive_Through, y = Count, fill = Gender)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Gender Distribution of Drive-Through Test Participants",
+       x = "Drive-Through Indicator", 
+       y = "Count") +
+  scale_fill_manual(values = c("#a6cee3", "#1f78b4")) +  
+  theme_minimal()
+
+
 
 # Does the distribution of the `ct_result` differ with sex group?
+ct_result_cat <- cut(complete_data$ct_result, c(10, 20, 30, 40, 50))
+summary(ct_result_cat)
+
 ct_result_dist <- complete_data %>%
   group_by(gender) %>%
   count(ct_result)
@@ -73,13 +90,18 @@ ggplot(ct_result_dist,
          y = ct_result,
          group = gender,
          color = gender)
-       ) + 
+) + 
   geom_point() +
   facet_wrap(vars(gender))
 
+#one -way anova test
+ct_result_gender_anova <- aov(complete_data$ct_result ~ complete_data$gender, data = complete_data)
+summary(ct_result_gender_anova)
 
 # Does the distribution of the `ct_result` differ with `payor_group`?
 # Subset the data
+count_pg <- count(complete_data, "payor_group")
+
 ct_result_dist_pg <- complete_data %>%
   group_by(payor_group) %>%
   count(ct_result)
@@ -96,6 +118,8 @@ ggplot(
   geom_point() +
   facet_wrap(vars(payor_group))
 
+ct_result_pg_anova <- aov(complete_data$ct_result ~ complete_data$payor_group, data = complete_data)
+summary(ct_result_pg_anova)
 
 # Were there more tests in any of the sex groups?
 tests_by_gender <- complete_data %>%
@@ -110,3 +134,10 @@ ggplot(data = tests_by_gender, aes(x = result, y = n, fill = gender)) +
   scale_fill_manual(values=c('#999999','#E69F00')) +
 # Use brewer color palettes
   scale_fill_brewer(palette="Blues")
+
+test_and_gender <- table(complete_data$gender, complete_data$result)
+test_and_gender
+
+#chi-square test
+test_and_gender_df <- as.data.frame(test_and_gender)
+print(chisq.test(test_and_gender))

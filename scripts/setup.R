@@ -9,11 +9,11 @@ here()
 
 # file structure
 
-dir.create("data")
-dir.create("figures")
-dir.create("processed_data")
-dir.create("results")
-dir.create("scripts")
+#dir.create("data")
+#dir.create("figures")
+#dir.create("processed_data")
+#dir.create("results")
+#dir.create("scripts")
 
 ## explore_dataset.txt and convert to tidy dataset----
 

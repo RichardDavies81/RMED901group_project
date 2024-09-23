@@ -2,7 +2,9 @@
 title: "Group 4 Report"
 author: "Richard Davies, Katarina Lundervol, Pakwanja Desiree Twea"
 date: "`r Sys.Date()`"
-output: pdf_document
+output:
+  pdf_document: default
+  word_document: default
 Requred package: tinytex, tidyverse, here, rstatix, corrplot, ggplot2
 ---
 
@@ -125,6 +127,99 @@ ggplot(data = complete_data, aes(x = pan_week, y = rec_ver_tat)) +
   geom_point() +
   geom_smooth(method = "lm")
 ```
+
+We observe that there are slightly more females than males in the cleaned data set. The bar plot below indicates that more people from both genders took the test at the drive-through than those who did not. However, from observation, the difference between genders is slightly larger among those who took the test at the drive-through compared to those who did not. To examine the relationship between gender and drive-through test participation, we conducted a Chi-squared test. With a p-value of 0.8728, we fail to reject the null hypothesis, suggesting that there is no significant association between gender and drive-through test participation in this data set.
+```{r}
+dt_and_gender <- table(complete_data$gender, complete_data$drive_thru_ind)
+# Create dt_and_gender as a data frame from the table
+dt_and_gender_df <- as.data.frame(dt_and_gender)
+print(chisq.test(dt_and_gender))
+
+# Rename columns for clarity (since table() creates V1, V2, and Freq by default)
+colnames(dt_and_gender_df) <- c("Gender", "Drive_Through", "Count")
+
+# Now use ggplot2 to plot
+ggplot(dt_and_gender_df, aes(x = Drive_Through, y = Count, fill = Gender)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Gender Distribution of Drive-Through Test Participants",
+       x = "Drive-Through Indicator", 
+       y = "Count") +
+  scale_fill_manual(values = c("#a6cee3", "#1f78b4")) +  # Custom colors
+  theme_minimal()
+```
+
+A comparison of cycle threshold values between men and women shows a similar distribution in the number of reaction cycles. However, males showed the lowest cycle threshold value compared to females. Despite this, the majority of threshold values exceeded 40 cycles for both genders. The p-value of 0.272 from the one-way ANOVA test means that we fail to reject the null hypothesis, suggesting that gender does not significantly affect the cycle threshold value.
+
+```{r}
+ct_result_cat <- cut(complete_data$ct_result, c(10, 20, 30, 40, 50))
+summary(ct_result_cat)
+
+ct_result_dist <- complete_data %>%
+  group_by(gender) %>%
+  count(ct_result)
+
+ggplot(ct_result_dist, 
+       aes(
+         x = 1:nrow(ct_result_dist),
+         y = ct_result,
+         group = gender,
+         color = gender)
+) + 
+  geom_point() +
+  facet_wrap(vars(gender))
+
+ct_result_gender_anova <- aov(complete_data$ct_result ~ complete_data$gender, data = complete_data)
+summary(ct_result_gender_anova)
+```
+
+The distribution of patients by payor group shows that the most common groups were commercial and government, with a significant proportion of patients listed as NA or unassigned. Despite this, a similar pattern was observed between government and commercial patients, while for charity care, medical assistance, other, and self-pay patients the minimum cycle threshold value was higher compared to the former groups. The one-way ANOVA test result is highly significant, indicating that the cycle threshold value is influenced by the payor group.
+
+```{r}
+ct_result_dist_pg <- complete_data %>%
+  group_by(payor_group) %>%
+  count(ct_result)
+
+ggplot(
+  ct_result_dist_pg,
+  aes(
+    x = 1:nrow(ct_result_dist_pg),
+    y = ct_result,
+    group = payor_group,
+    color = payor_group
+    )
+  ) +
+  geom_point() +
+  facet_wrap(vars(payor_group))
+
+ct_result_pg_anova <- aov(complete_data$ct_result ~ complete_data$payor_group, data = complete_data)
+summary(ct_result_pg_anova)
+```
+
+The distribution of results by gender shows a similar pattern for both, with women comprising a slightly larger proportion in each result category except for the invalid category. The chi-square test yielded a p-value of 0.5481, meaning that we fail to reject the null hypothesis, suggesting that gender does not have a significant influence on the test result.
+
+```{r}
+tests_by_gender <- complete_data %>%
+  group_by(gender) %>%
+  count(result)
+
+tests_by_gender
+
+ggplot(data = tests_by_gender, aes(x = result, y = n, fill = gender)) +
+  geom_bar(stat = "identity", color="black", position=position_dodge())+
+  theme_minimal() +
+  scale_fill_manual(values=c('#999999','#E69F00')) +
+# Use brewer color palettes
+  scale_fill_brewer(palette="Blues")
+
+test_and_gender <- table(complete_data$gender, complete_data$result)
+test_and_gender
+
+#chi-square test
+test_and_gender_df <- as.data.frame(test_and_gender)
+print(chisq.test(test_and_gender))
+
+```
+
 
 ## Statistics
 
