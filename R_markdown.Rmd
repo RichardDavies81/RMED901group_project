@@ -128,17 +128,22 @@ ggplot(data = complete_data, aes(x = pan_week, y = rec_ver_tat)) +
   geom_smooth(method = "lm")
 ```
 
-We observe that there are slightly more females than males in the cleaned data set. The bar plot below indicates that more people from both genders took the test at the drive-through than those who did not. However, from observation, the difference between genders is slightly larger among those who took the test at the drive-through compared to those who did not. To examine the relationship between gender and drive-through test participation, we conducted a Chi-squared test. With a p-value of 0.8728, we fail to reject the null hypothesis, suggesting that there is no significant association between gender and drive-through test participation in this data set.
+We observe slightly more females than males in the cleaned data set.
+The bar plot below indicates that more people from both genders took the test at the drive-through than those who did not. 
+However, from observation, the difference between genders is slightly larger among those who took the test at the drive-through than those who did not. 
+To examine the relationship between gender and drive-through test participation, we conducted a Chi-squared test. 
+With a p-value of 0.8728, we fail to reject the null hypothesis, suggesting no significant association exists between gender and drive-through test participation in this data set.
+
 ```{r}
 dt_and_gender <- table(complete_data$gender, complete_data$drive_thru_ind)
 # Create dt_and_gender as a data frame from the table
 dt_and_gender_df <- as.data.frame(dt_and_gender)
 print(chisq.test(dt_and_gender))
 
-# Rename columns for clarity (since table() creates V1, V2, and Freq by default)
+# Rename columns for clarity
 colnames(dt_and_gender_df) <- c("Gender", "Drive_Through", "Count")
 
-# Now use ggplot2 to plot
+# plot using ggplot
 ggplot(dt_and_gender_df, aes(x = Drive_Through, y = Count, fill = Gender)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(title = "Gender Distribution of Drive-Through Test Participants",
@@ -148,7 +153,9 @@ ggplot(dt_and_gender_df, aes(x = Drive_Through, y = Count, fill = Gender)) +
   theme_minimal()
 ```
 
-A comparison of cycle threshold values between men and women shows a similar distribution in the number of reaction cycles. However, males showed the lowest cycle threshold value compared to females. Despite this, the majority of threshold values exceeded 40 cycles for both genders. The p-value of 0.272 from the one-way ANOVA test means that we fail to reject the null hypothesis, suggesting that gender does not significantly affect the cycle threshold value.
+A comparison of cycle threshold values between men and women shows a similar distribution in the number of reaction cycles. 
+However, males showed the lowest cycle threshold value compared to females. Despite this, the majority of threshold values exceeded 40 cycles for both genders. 
+The p-value of 0.272 from the one-way ANOVA test means we fail to reject the null hypothesis, suggesting that gender does not affect the cycle threshold value.
 
 ```{r}
 ct_result_cat <- cut(complete_data$ct_result, c(10, 20, 30, 40, 50))
@@ -172,7 +179,10 @@ ct_result_gender_anova <- aov(complete_data$ct_result ~ complete_data$gender, da
 summary(ct_result_gender_anova)
 ```
 
-The distribution of patients by payor group shows that the most common groups were commercial and government, with a significant proportion of patients listed as NA or unassigned. Despite this, a similar pattern was observed between government and commercial patients, while for charity care, medical assistance, other, and self-pay patients the minimum cycle threshold value was higher compared to the former groups. The one-way ANOVA test result is highly significant, indicating that the cycle threshold value is influenced by the payor group.
+The distribution of patients by payor group shows that the most common groups were commercial and government, with a significant proportion of patients listed as NA or unassigned. 
+Despite this, a similar pattern was observed between government and commercial patients. 
+In contrast, the minimum cycle threshold value for charity care, medical assistance, and other self-pay patients was higher than for the former groups. 
+The one-way ANOVA test result is highly significant, indicating that the cycle threshold value is influenced by the payor group.
 
 ```{r}
 ct_result_dist_pg <- complete_data %>%
@@ -195,7 +205,9 @@ ct_result_pg_anova <- aov(complete_data$ct_result ~ complete_data$payor_group, d
 summary(ct_result_pg_anova)
 ```
 
-The distribution of results by gender shows a similar pattern for both, with women comprising a slightly larger proportion in each result category except for the invalid category. The chi-square test yielded a p-value of 0.5481, meaning that we fail to reject the null hypothesis, suggesting that gender does not have a significant influence on the test result.
+The distribution of results by gender shows a similar pattern for both, with women comprising a slightly larger proportion in each result category except for the invalid category. 
+The chi-square test yielded a p-value of 0.5481, meaning that we fail to reject the null hypothesis. 
+This suggests that gender does not influence the test result.
 
 ```{r}
 tests_by_gender <- complete_data %>%
@@ -255,7 +267,7 @@ chisq.test(x = positive_visits$n, y = positive_visits$positive, simulate.p.value
 ```
 
 A visual inspection of the distribution suggests that age may be associated with the test result, as there appears to be a positive correlation between age distribution and test outcomes.
-However, the dataset is skewed toward younger individuals, so the correlation may be due to the age structure. 
+However, the dataset is skewed toward younger individuals, so that the correlation may be due to the age structure. 
 To determine whether this association holds statistically, we performed an ANOVA test. 
 The results showed a significant p-value, indicating that we cannot rule out the possibility of an association between age and test result.
 
@@ -283,8 +295,8 @@ result_age_aov
 summary(result_age_aov)
 ```
 
-The table below shows the distribution of cycle threshold (Ct) results and test outcomes.
-As seen earlier, the majority of individuals in this dataset have a Ct value between 40 and 50.
+The table below shows the cycle threshold (Ct) results and distribution of test outcomes.
+As seen earlier, most individuals in this dataset have a Ct value between 40 and 50.
 Interestingly, this range also has the lowest number of positive test results compared to those with lower Ct values.
 Additionally, the ANOVA test shows a significant result, suggesting a difference in the distribution of Ct values across different result outcome groups.
 
