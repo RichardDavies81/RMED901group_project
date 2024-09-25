@@ -67,10 +67,17 @@ Violin plot and scatterplot (ggplot, geom_violin and geom_point) indicates littl
 
 
 ### Were there more females than males that took the test at a drive through?
-### Does the distribution of the `ct_result` differ with sex group?
-### Does the distribution of the `ct_result` differ with `payor_group`?
-### Were there more tests in any of the sex groups?
+There were more females than males that took the test at a drive through.
 
+### Does the distribution of the `ct_result` differ with sex group?
+The overall distribution of the cycle threshold results did not differ much between the two genders. 
+
+### Does the distribution of the `ct_result` differ with `payor_group`?
+Due to the small proportion of patients who had tests done under payor groups other than commercial and charity care, it is challenging to draw definitive conclusions about the similarity in distribution across all groups.
+However, among the majority of patients in each payor group, most had cycle threshold values ranging between 40 and 50
+
+### Were there more tests in any of the sex groups?
+A similar pattern is observed with slightly more females than males in each result category.
 
 ## 3) Analysis
 
@@ -85,8 +92,11 @@ Pearson's Chi-squared test (chisq.test) indicate a greater incidence of positive
 
 
 ### Is the age of the individual associated with whether the test result is negative or positive?
+The age distribution of the test results indicates an association with age, which is further validated by the ANOVA test results
 
 ### Is there a difference in the distributions of `ct_results` between different outcome groups (`result`)?
+The age distribution of the test results indicates a negative association ct results and the result outcome groups, which is further validated by the ANOVA test results
+ 
 
 ### Does the number of positive tests depend on the `pan_day`?
 

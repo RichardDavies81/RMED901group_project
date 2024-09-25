@@ -52,14 +52,12 @@ complete_data$age_cat <- cut(complete_data$age,
                              labels = c("0-9", "10-19", "20-29", "30-39", 
                                         "40-49", "50-59", "60-69", "70-79", 
                                         "80-89", "90-99", "100+"))
-
-arrange(complete_data, by = ID)
-complete_data %>% select(ID, age, age_cat, gender, everything())
+by(complete_data$age_cat, complete_data$result, summary)
 
 ggplot(complete_data, 
        aes(
          x = result,
-         y = age_cat,
+         y = age,
          group = gender,
          color = gender)
 ) + 
@@ -67,11 +65,21 @@ ggplot(complete_data,
   facet_wrap(vars(gender))
 
 # ANOVA
-complete_data_aov <- aov(complete_data$age~complete_data$result)
-complete_data_aov
-summary(complete_data_aov)
+result_age_aov <- aov(age ~ result, data = complete_data)
+result_age_aov
+summary(result_age_aov)
 
 
 # Is there a difference in the distributions of `ct_results` between different outcome groups (`result`)?
+result_ct_table <- complete_data %>%
+  mutate(ct_result_cat = cut(ct_result, breaks = c(10, 20, 30, 40, 50))) %>%
+  count(result, ct_result_cat) %>%
+  pivot_wider(names_from = ct_result_cat, values_from = n, values_fill = 0)
+
+# View the table
+print(result_ct_table)
+
+ct_result_ct_anova <- aov(complete_data$ct_result ~ complete_data$result, data = complete_data)
+summary(ct_result_ct_anova)
 
 # Does the number of positive tests depend on the `pan_day`?

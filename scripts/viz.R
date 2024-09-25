@@ -78,8 +78,12 @@ ggplot(dt_and_gender_df, aes(x = Drive_Through, y = Count, fill = Gender)) +
 
 
 # Does the distribution of the `ct_result` differ with sex group?
-ct_result_cat <- cut(complete_data$ct_result, c(10, 20, 30, 40, 50))
-summary(ct_result_cat)
+ct_result_cat <- complete_data %>%
+  group_by(gender) %>% 
+  mutate(ct_result_cat = cut(ct_result, breaks = c(10, 20, 30, 40, 50))) %>%
+  reframe(ct_result_summary = summary(ct_result_cat)) %>%
+
+ct_result_cat
 
 ct_result_dist <- complete_data %>%
   group_by(gender) %>%
@@ -103,6 +107,17 @@ summary(ct_result_gender_anova)
 
 # Does the distribution of the `ct_result` differ with `payor_group`?
 # Subset the data
+
+pg_ct_table <- complete_data %>%
+  mutate(ct_result_cat = cut(ct_result, breaks = c(10, 20, 30, 40, 50))) %>%
+  count(payor_group, ct_result_cat) %>%
+  pivot_wider(names_from = ct_result_cat, values_from = n, values_fill = 0)
+
+pg_ct_table
+
+# View the table
+print(table)
+
 count_pg <- count(complete_data, "payor_group")
 
 ct_result_dist_pg <- complete_data %>%

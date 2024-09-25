@@ -254,4 +254,50 @@ While drive-through use was associated with an increase in positive tests
 chisq.test(x = positive_visits$n, y = positive_visits$positive, simulate.p.value = TRUE)
 ```
 
+A visual inspection of the distribution suggests that age may be associated with the test result, as there appears to be a positive correlation between age distribution and test outcomes.
+However, the dataset is skewed toward younger individuals, so the correlation may be due to the age structure. 
+To determine whether this association holds statistically, we performed an ANOVA test. 
+The results showed a significant p-value, indicating that we cannot rule out the possibility of an association between age and test result.
+
+```{r}
+complete_data$age_cat <- cut(complete_data$age, 
+                             breaks = c(0, 9, 19, 29, 39, 49, 59, 69, 79, 89, 99, Inf),
+                             labels = c("0-9", "10-19", "20-29", "30-39", 
+                                        "40-49", "50-59", "60-69", "70-79", 
+                                        "80-89", "90-99", "100+"))
+by(complete_data$age_cat, complete_data$result, summary)
+
+ggplot(complete_data, 
+       aes(
+         x = result,
+         y = age,
+         group = gender,
+         color = gender)
+) + 
+  geom_point() +
+  facet_wrap(vars(gender))
+
+# ANOVA
+result_age_aov <- aov(age ~ result, data = complete_data)
+result_age_aov
+summary(result_age_aov)
+```
+
+The table below shows the distribution of cycle threshold (Ct) results and test outcomes.
+As seen earlier, the majority of individuals in this dataset have a Ct value between 40 and 50.
+Interestingly, this range also has the lowest number of positive test results compared to those with lower Ct values.
+Additionally, the ANOVA test shows a significant result, suggesting a difference in the distribution of Ct values across different result outcome groups.
+
+```{r}
+result_ct_table <- complete_data %>%
+  mutate(ct_result_cat = cut(ct_result, breaks = c(10, 20, 30, 40, 50))) %>%
+  count(result, ct_result_cat) %>%
+  pivot_wider(names_from = ct_result_cat, values_from = n, values_fill = 0)
+
+# View the table
+print(result_ct_table)
+
+ct_result_ct_anova <- aov(complete_data$ct_result ~ complete_data$result, data = complete_data)
+summary(ct_result_ct_anova)
+```
 
